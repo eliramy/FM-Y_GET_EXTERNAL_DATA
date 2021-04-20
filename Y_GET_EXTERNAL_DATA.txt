@@ -1,0 +1,45 @@
+FUNCTION y_get_external_data.
+*"----------------------------------------------------------------------
+*"*"Local Interface:
+*"  IMPORTING
+*"     REFERENCE(IV_PROG) TYPE  PROGNAME
+*"     REFERENCE(IV_VARIANT) TYPE  VARIANT
+*"  EXPORTING
+*"     REFERENCE(EV_DATA) TYPE REF TO  DATA
+*"----------------------------------------------------------------------
+
+  cl_salv_bs_runtime_info=>set(
+    EXPORTING
+      display        = abap_false
+      metadata       = abap_false
+      data           = abap_true ).
+*    structure      =     " Table Name
+*    structure_line =     " Table Name
+
+
+  SUBMIT (iv_prog) USING SELECTION-SET iv_variant AND RETURN.
+
+
+  TRY.
+      CALL METHOD cl_salv_bs_runtime_info=>get_data_ref
+        IMPORTING
+          r_data = ev_data.
+*         r_data_line       =
+*         r_data_descr      =
+*         r_data_line_descr =
+
+    CATCH cx_salv_bs_sc_runtime_info INTO DATA(lo_cx).
+
+      DATA(lv_err) = lo_cx->if_message~get_longtext( ).
+
+      IF lv_err IS INITIAL.
+        lv_err = lo_cx->if_message~get_text( ) .
+      ENDIF.
+
+      MESSAGE lv_err TYPE 'E'.
+
+  ENDTRY.
+
+  cl_salv_bs_runtime_info=>clear_all( ).
+
+ENDFUNCTION.
