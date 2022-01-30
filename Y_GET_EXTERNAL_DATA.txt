@@ -18,9 +18,7 @@ FUNCTION y_get_external_data.
 *    structure      =     " Table Name
 *    structure_line =     " Table Name
 
-
   SUBMIT (iv_prog) USING SELECTION-SET iv_variant AND RETURN.
-
 
   TRY.
       CALL METHOD cl_salv_bs_runtime_info=>get_data_ref
